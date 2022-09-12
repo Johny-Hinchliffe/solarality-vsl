@@ -1,22 +1,18 @@
 const SolarPanels = [
 	{
-		value: 'Unspecified 400W Panel',
-		fullName: 'Unspecified 400W Panel',
-		effic: 'Unknown ',
+		value: 'LONGi 400W Panel',
+		fullName: 'LONGi 400W Panel',
+		effic: '20.5',
 		warranty: [12, 25],
 		watt: 400,
-		width: 1.15,
-		length: 1.8,
-	},
-	{
-		value: 'Unspecified 450W Panel',
-		fullName: 'Unspecified 450W Panel',
-		effic: 'Unknown ',
-		warranty: [12, 25],
-		watt: 450,
-		width: 1.06,
-		length: 2.12,
-	},
+		width: 1.134,
+		length: 1.722,
+		maximumPower: 400,
+		openCircuitVoltage: 36.75,
+		shortCircutVoltage: 13.76,
+		voltageAtMaximumPower: 30.75,
+		currentAtMaximumPower: 13.01,
+	}
 ]
 
 export default SolarPanels

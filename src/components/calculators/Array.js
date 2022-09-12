@@ -28,8 +28,8 @@ const Array = (roofHeight, roofWidth, panelName, type, orien, angle, houseType, 
 
 	let panel = Panels.find((el) => el.value === panelName)
 
-	let panelHeight = (orien === 'portrait' ? panel.length : panel.width) //+ 0.02
-	let panelWidth = (orien === 'portrait' ? panel.width : panel.length) //+ 0.02
+	let panelHeight = (orien === 'portrait' ? panel.length : panel.width) + 0.02
+	let panelWidth = (orien === 'portrait' ? panel.width : panel.length) + 0.02
 	const distanceCalc = panelHeight / Math.tan((angle * Math.PI) / 180)
 
 	const gap = houseType === 'detached' ? .6 : houseType === 'semi-detached' ? .3 : 0
@@ -60,7 +60,7 @@ const Array = (roofHeight, roofWidth, panelName, type, orien, angle, houseType, 
 		}
 		let panelPerRow = Math.floor((roofW - gap) / panelWidth)
 		const rowSpareSpace =
-			Math.floor((roofW - panelPerRow * panelWidth + 0.00) * 100) / 100
+			Math.floor((roofW - panelPerRow * panelWidth + 0.02) * 100) / 100
 
 		if (type === 'hip') {
 			panelPerRow *= 2
@@ -72,12 +72,12 @@ const Array = (roofHeight, roofWidth, panelName, type, orien, angle, houseType, 
 	}
 
 	spareSpaceTopBott =
-		Math.floor((roofH - arrayLayout.length * panelHeight + 0.00) * 100) / 100
+		Math.floor((roofH - arrayLayout.length * panelHeight + 0.02) * 100) / 100
 
 	let panelCount = arrayLayout.reduce((a, b) => a + b)
 	let systemSize = (panelCount * panel.watt) / 1000
 	const totalPanelWidth = arrayLayout.map(
-		(el) => Math.floor((el * panelWidth - 0.00) * 100) / 100
+		(el) => Math.floor((el * panelWidth - 0.02) * 100) / 100
 	)
 	let extraPanel = false
 	if (
@@ -88,7 +88,7 @@ const Array = (roofHeight, roofWidth, panelName, type, orien, angle, houseType, 
 		extraPanel = true
 		const landscapeRow = Math.floor((roofWidth - gap) / panelHeight)
 		const totalWidth =
-			Math.floor((landscapeRow * panelHeight - 0.00) * 100) / 100
+			Math.floor((landscapeRow * panelHeight - 0.02) * 100) / 100
 		const landscapeSpareSpace = Math.floor((roofW - totalWidth) * 100) / 100
 
 		panelCount += landscapeRow
