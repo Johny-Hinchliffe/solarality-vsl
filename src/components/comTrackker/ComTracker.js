@@ -6,6 +6,7 @@ import CardHeader from '@mui/material/CardHeader'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
+import ListSubheader from '@mui/material/ListSubheader'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -19,6 +20,7 @@ import dayjs from 'dayjs'
 
 import Modal from '../mini-components/Modal'
 import DeleteBin from './DeleteBin'
+import Details from './Details'
 
 function not(a, b) {
 	return a.filter((value) => b.indexOf(value) === -1)
@@ -40,6 +42,7 @@ export default function ComTracker() {
 	const [date, setDate] = React.useState(new Date())
 	const [postcode, setPostcode] = React.useState()
 	const [error, setError] = React.useState(false)
+	const [jobMonth, setJobMonth] = React.useState([])
 
 	const leftChecked = intersection(checked, left)
 	const rightChecked = intersection(checked, right)
@@ -109,8 +112,7 @@ export default function ComTracker() {
 
 	const handleCheckedRight = () => {
 		setRight(right.concat(leftChecked))
-
-		//setDeleted(not(deleted, leftChecked))
+		// add ?
 		setLeft(not(left, leftChecked))
 		setChecked(not(checked, leftChecked))
 	}
@@ -199,6 +201,60 @@ export default function ComTracker() {
 		}
 	}
 
+	const addSubHead = (items) => {
+		let result = []
+		for (let i = 1; i <= 12; i++) {
+			result.push(items.filter((el) => dayjs(el[1]).format('M') == i))
+		}
+		result = result.filter((el) => el.length > 0)
+		
+
+
+		return (
+			<>
+				{result.map((monthGroup) => (
+					<li key={monthGroup[0]}>
+						<ul>
+							<ListSubheader>
+								{dayjs(monthGroup[0][1]).format('MMMM YYYY')} - £
+								{monthGroup.length * 100}
+							</ListSubheader>
+
+							{monthGroup.map((value) => {
+								const labelId = `transfer-list-all-item-${value}-label`
+
+								return (
+									<ListItem
+										key={(value, Math.random() * 10000)}
+										role="listitem"
+										button
+										onClick={handleToggle(value)}
+									>
+										<ListItemIcon>
+											<Checkbox
+												checked={checked.indexOf(value) !== -1}
+												tabIndex={-1}
+												disableRipple
+												inputProps={{
+													'aria-labelledby': labelId,
+												}}
+											/>
+										</ListItemIcon>
+										<ListItemText id={labelId} primary={value[0]} />
+										<ListItemText
+											id={labelId}
+											primary={dayjs(value[1]).format('DD/MM/YYYY')}
+										/>
+									</ListItem>
+								)
+							})}
+						</ul>
+					</li>
+				))}
+			</>
+		)
+	}
+
 	const customList = (title, items, subheading) => (
 		<Card>
 			<Box
@@ -246,42 +302,20 @@ export default function ComTracker() {
 				component="div"
 				role="list"
 			>
-				{items.map((value) => {
-					const labelId = `transfer-list-all-item-${value}-label`
-
-					return (
-						<ListItem
-							key={(value, Math.random() * 10000)}
-							role="listitem"
-							button
-							onClick={handleToggle(value)}
-						>
-							<ListItemIcon>
-								<Checkbox
-									checked={checked.indexOf(value) !== -1}
-									tabIndex={-1}
-									disableRipple
-									inputProps={{
-										'aria-labelledby': labelId,
-									}}
-								/>
-							</ListItemIcon>
-							<ListItemText id={labelId} primary={value[0]} />
-							<ListItemText
-								id={labelId}
-								primary={dayjs(value[1]).format('DD/MM/YYYY')}
-							/>
-						</ListItem>
-					)
-				})}
-				<ListItem />
+				{addSubHead(items)}
 			</List>
 		</Card>
 	)
 
 	return (
 		<>
-			<Grid container spacing={3} justifyContent="center" alignItems="center" sx={{margiTop: 5}}>
+			<Grid
+				container
+				spacing={3}
+				justifyContent="center"
+				alignItems="center"
+				sx={{ margiTop: 5 }}
+			>
 				<Grid item>{customList('Awaiting Install', left, owed)}</Grid>
 				<Grid item>
 					<Grid container direction="column" alignItems="center">
@@ -361,7 +395,7 @@ export default function ComTracker() {
 								</Box>
 							</CardContent>
 						</Card>
-						<Typography sx={{ marginTop: '10px' }} variant="subtitle2">
+						{/* <Typography sx={{ marginTop: '10px' }} variant="subtitle2">
 							Ordered by {sortBy === 'Post' ? 'Postcode' : 'Date'}
 						</Typography>
 						<Button
@@ -372,7 +406,16 @@ export default function ComTracker() {
 							aria-label="Order by ?"
 						>
 							Change
-						</Button>
+						</Button> */}
+						{/* <Modal
+							rightChecked={rightChecked}
+							leftChecked={leftChecked}
+							button='Details'
+							title={'Lost Jobs'}
+							content={
+								<Details left={left} right={right} />
+							}
+						/> */}
 					</Grid>
 				</Grid>
 
