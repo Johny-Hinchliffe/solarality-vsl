@@ -5,7 +5,7 @@ import {Button} from '@mui/material'
 const Details = ({left, right}) => {
  
   return (
-    <Button>Details</Button>
+    <Button variant='outlined' size='large'>Details</Button>
   )
 }
 

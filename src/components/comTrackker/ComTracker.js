@@ -76,7 +76,7 @@ export default function ComTracker() {
 		localStorage.setItem(DELETED_KEY, JSON.stringify(deleted))
 		setChecked([])
 
-		//console.log(right)
+	
 
 		// if (sortBy === 'Post') {
 		// 	setLeft(left.sort())
@@ -87,6 +87,9 @@ export default function ComTracker() {
 		// 	setLeft(left.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
 		// 	setRight(right.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
 		// }
+
+			
+
 	}, [left, right, deleted])
 
 	const handleToggle = (value) => () => {
@@ -113,21 +116,20 @@ export default function ComTracker() {
 	}
 
 	const handleCheckedRight = () => {
-		leftChecked.forEach(el => el.push(dayjs(Date.now()).format('YYYY/MM/DD')))
+		leftChecked.forEach((el) => el.push(dayjs(Date.now()).format('YYYY/MM/DD')))
 		setRight(right.concat(leftChecked))
-		//console.log(leftChecked)
-		console.log(leftChecked)
-		// add ?
+
 		setLeft(not(left, leftChecked))
 		setChecked(not(checked, leftChecked))
 	}
 
 	const handleCheckedLeft = () => {
-		rightChecked.forEach(el => el.pop())
+		rightChecked.forEach((el) => el.pop())
 		setLeft(left.concat(rightChecked))
 
 		setRight(not(right, rightChecked))
 		setChecked(not(checked, rightChecked))
+	
 	}
 
 	const handleOrder = () => {
@@ -137,8 +139,12 @@ export default function ComTracker() {
 			setLeft(left.sort())
 			setRight(right.sort())
 		} else {
-			setLeft(left.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
-			setRight(right.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
+			setLeft(
+				left.sort((a, b) => a[a.length - 1].localeCompare(b[b.length - 1]))
+			)
+			setRight(
+				right.sort((a, b) => a[a.length - 1].localeCompare(b[b.length - 1]))
+			)
 		}
 		setSortBy(sort)
 	}
@@ -208,18 +214,15 @@ export default function ComTracker() {
 	}
 
 	const addSubHead = (items) => {
-		
 		let result = []
 		for (let i = 1; i <= 12; i++) {
-			
-			result.push(items.filter((el) => {
-				console.log(el)
-				//console.log(dayjs(el[el.length-1]).format('M'))
-				return dayjs(el[el.length-1]).format('M') == i}))
+			result.push(
+				items.filter((el) => {
+					return dayjs(el[el.length - 1]).format('M') == i
+				})
+			)
 		}
 		result = result.filter((el) => el.length > 0)
-		
-		console.log(result)
 
 		return (
 			<>
@@ -227,9 +230,10 @@ export default function ComTracker() {
 					<li key={monthGroup[0]}>
 						<ul>
 							<ListSubheader>
-								{console.log(monthGroup.length)}
-								{dayjs(monthGroup[0][monthGroup[0].length -1]).format('MMMM YYYY')} - £
-								{monthGroup.length * 100}
+								{dayjs(monthGroup[0][monthGroup[0].length - 1]).format(
+									'MMMM YYYY'
+								)}{' '}
+								- £{monthGroup.length * 100}
 							</ListSubheader>
 
 							{monthGroup.map((value) => {
@@ -419,15 +423,14 @@ export default function ComTracker() {
 						>
 							Change
 						</Button> */}
-						{/* <Modal
-							rightChecked={rightChecked}
-							leftChecked={leftChecked}
+						<Modal
 							button='Details'
-							title={'Lost Jobs'}
+							title={'More Info'}
+							buttonStyle={{color: 'primary', size: 'large', variant: 'outlined', mt: '10px'}}
 							content={
 								<Details left={left} right={right} />
 							}
-						/> */}
+						/>
 					</Grid>
 				</Grid>
 

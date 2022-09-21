@@ -23,24 +23,25 @@ export default function BasicModal({
 	button,
 	rightChecked,
 	modalState,
-    setModalState
+    setModalState,
+	buttonStyle
 	
 }) {
 	const [open, setOpen] = React.useState(false)
 
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
-
+	console.log(style)
 	return (
 		<>
 			<Button
-				
-				variant="contained"
-				size="small"
+				sx={{ mt: buttonStyle?.mt }}
+				variant={buttonStyle?.variant || 'contained'}
+				size={buttonStyle?.size || "small"}
 				type="submit"
 				onClick={handleOpen}
-				disabled={rightChecked.length > 0}
-				color= 'success'
+				disabled={rightChecked?.length > 0}
+				color={buttonStyle?.color || 'success'}
 			>
 				{button}
 			</Button>
