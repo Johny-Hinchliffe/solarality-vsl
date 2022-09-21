@@ -38,7 +38,7 @@ export default function ComTracker() {
 	const [checked, setChecked] = React.useState([])
 	const [left, setLeft] = React.useState([])
 	const [right, setRight] = React.useState([])
-	const [sortBy, setSortBy] = React.useState('Postcode')
+	const [sortBy, setSortBy] = React.useState('Date')
 	const [date, setDate] = React.useState(new Date())
 	const [postcode, setPostcode] = React.useState()
 	const [error, setError] = React.useState(false)
@@ -76,15 +76,17 @@ export default function ComTracker() {
 		localStorage.setItem(DELETED_KEY, JSON.stringify(deleted))
 		setChecked([])
 
-		if (sortBy === 'Post') {
-			setLeft(left.sort())
-			setRight(right.sort())
-		}
+		//console.log(right)
 
-		if (sortBy === 'Date') {
-			setLeft(left.sort((a, b) => a[1].localeCompare(b[1])))
-			setRight(right.sort((a, b) => a[1].localeCompare(b[1])))
-		}
+		// if (sortBy === 'Post') {
+		// 	setLeft(left.sort())
+		// 	setRight(right.sort())
+		// }
+
+		// if (sortBy === 'Date') {
+		// 	setLeft(left.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
+		// 	setRight(right.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
+		// }
 	}, [left, right, deleted])
 
 	const handleToggle = (value) => () => {
@@ -111,13 +113,17 @@ export default function ComTracker() {
 	}
 
 	const handleCheckedRight = () => {
+		leftChecked.forEach(el => el.push(dayjs(Date.now()).format('YYYY/MM/DD')))
 		setRight(right.concat(leftChecked))
+		//console.log(leftChecked)
+		console.log(leftChecked)
 		// add ?
 		setLeft(not(left, leftChecked))
 		setChecked(not(checked, leftChecked))
 	}
 
 	const handleCheckedLeft = () => {
+		rightChecked.forEach(el => el.pop())
 		setLeft(left.concat(rightChecked))
 
 		setRight(not(right, rightChecked))
@@ -131,8 +137,8 @@ export default function ComTracker() {
 			setLeft(left.sort())
 			setRight(right.sort())
 		} else {
-			setLeft(left.sort((a, b) => a[1].localeCompare(b[1])))
-			setRight(right.sort((a, b) => a[1].localeCompare(b[1])))
+			setLeft(left.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
+			setRight(right.sort((a, b) => a[a.length-1].localeCompare(b[b.length-1])))
 		}
 		setSortBy(sort)
 	}
@@ -202,13 +208,18 @@ export default function ComTracker() {
 	}
 
 	const addSubHead = (items) => {
+		
 		let result = []
 		for (let i = 1; i <= 12; i++) {
-			result.push(items.filter((el) => dayjs(el[1]).format('M') == i))
+			
+			result.push(items.filter((el) => {
+				console.log(el)
+				//console.log(dayjs(el[el.length-1]).format('M'))
+				return dayjs(el[el.length-1]).format('M') == i}))
 		}
 		result = result.filter((el) => el.length > 0)
 		
-
+		console.log(result)
 
 		return (
 			<>
@@ -216,7 +227,8 @@ export default function ComTracker() {
 					<li key={monthGroup[0]}>
 						<ul>
 							<ListSubheader>
-								{dayjs(monthGroup[0][1]).format('MMMM YYYY')} - £
+								{console.log(monthGroup.length)}
+								{dayjs(monthGroup[0][monthGroup[0].length -1]).format('MMMM YYYY')} - £
 								{monthGroup.length * 100}
 							</ListSubheader>
 
