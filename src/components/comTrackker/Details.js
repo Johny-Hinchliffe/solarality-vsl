@@ -129,7 +129,7 @@ export default function CollapsibleTable({ left, right }) {
 			return {
 				postcode: job[0],
 				soldDate: job[1],
-				installedDate: job[2] || 'N/A',
+				installedDate: dayjs(job[2]).format('MMM YY') || 'N/A',
 			}
 		})
 
