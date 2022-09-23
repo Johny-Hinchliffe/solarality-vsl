@@ -99,12 +99,12 @@ export default function CollapsibleTable({ left, right }) {
 	const allSold = left.concat(right)
 	//console.log(allSold)
 
-	const createRows = (items) => {
+	const createRows = (items, type) => {
 		let result = []
 		for (let i = 1; i <= 12; i++) {
 			result.push(
 				items.filter((el) => {
-					return dayjs(el[el.length - 1]).format('M') == i
+					return dayjs(type === 2 ? el[el.length -1] : el[1]).format('M') == i
 				})
 			)
 		}
@@ -116,20 +116,26 @@ export default function CollapsibleTable({ left, right }) {
 		return result
 	}
 
-	const all = createRows(allSold)
+	const all = createRows(allSold, 1)
+
+
+
+  //console.log(all)
 
 	const rows = all?.map((el) => {
 		const saleCount = el.length - 1
-		const installedCount = el.filter((e) => e.length === 3).length
-		const totalMoneyForMonth = saleCount * 50 + installedCount * 50
 		const month = el[0]
+    const installedCount = right.filter(e => dayjs(e[2]).format('MMM YY') === month).length
+		const totalMoneyForMonth = saleCount * 50 + installedCount * 50
+    
 		el.shift()
 
 		const sales = el.map((job) => {
+      
 			return {
 				postcode: job[0],
 				soldDate: job[1],
-				installedDate: dayjs(job[2]).format('MMM YY') || 'N/A',
+				installedDate: job[2] ? dayjs(job[2]).format('MMM YY') : 'N/A',
 			}
 		})
 
@@ -147,10 +153,6 @@ export default function CollapsibleTable({ left, right }) {
   const totalPaid = ((left.length + right.length + right.length) - (rows[0].saleCount + rows[0].installedCount)) * 50
   const totalOwed = (left.length + (rows[0].saleCount + rows[0].installedCount)) * 50
 
-  console.log({
-    totalOwed,
-    totalPaid
-  })
 
 
 
@@ -175,6 +177,7 @@ export default function CollapsibleTable({ left, right }) {
 					</TableHead>
 				</Table>
 			</TableContainer> */}
+      
 			<Box
 				sx={{
 					display: 'flex',
@@ -183,6 +186,7 @@ export default function CollapsibleTable({ left, right }) {
 					mb: '20px',
 				}}
 			>
+        
 				<Box
 					sx={{
 						display: 'flex',
@@ -247,7 +251,7 @@ export default function CollapsibleTable({ left, right }) {
 							<TableCell>Month</TableCell>
 							<TableCell align="right">Sold</TableCell>
 							<TableCell align="right">Installed </TableCell>
-							<TableCell align="right">Total Commission</TableCell>
+							<TableCell align="right">Paid</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
