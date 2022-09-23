@@ -1,7 +1,7 @@
 const SolarPanels = [
 	{
-		value: 'LONGi 370W Black Frame',
-		fullName: 'LONGi 370W Black Frame',
+		value: 'LONGi 450W Silver Frame',
+		fullName: 'LONGi 450W Silver Frame',
 		effic: '20.7',
 		warranty: [12, 25],
 		watt: 450,
@@ -32,6 +32,15 @@ const SolarPanels = [
 		length: 1.755,
 	},
 	{
+		value: 'LONGi 370W Black Frame',
+		fullName: 'LONGi 370W Black Frame',
+		effic: '20.3',
+		warranty: [12, 25],
+		watt: 370,
+		width: 1.038,
+		length: 1.755,
+	},
+	{
 		value: 'Sharp 400W All Black',
 		fullName: 'Sharp 400W All Black',
 		effic: '20.5',
@@ -42,12 +51,12 @@ const SolarPanels = [
 	},
 	{
 		value: 'Sharp 540W All Black',
-		fullName: 'Sharp 400W All Black',
+		fullName: 'Sharp 540W All Black',
 		effic: '20.9',
 		warranty: [12, 30],
 		watt: 540,
 		width: 1.134,
-		length: 1.278,
+		length: 2.278,
 	},
 ]
 

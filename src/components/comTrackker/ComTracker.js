@@ -170,8 +170,8 @@ export default function ComTracker() {
 		setChecked(not(checked, rightChecked))
 	}
 
-	const owed = `Total Owed £${!left ? 0 : left.length * 100}`
-	const paid = `Total Paid £${!right ? 0 : right.length * 100}`
+	const owed = ``
+	const paid = ``
 	const recover = (
 		<>
 			<RestoreFromTrashIcon /> Recover
@@ -223,6 +223,7 @@ export default function ComTracker() {
 			)
 		}
 		result = result.filter((el) => el.length > 0)
+
 
 		return (
 			<>
@@ -425,8 +426,8 @@ export default function ComTracker() {
 						</Button> */}
 						<Modal
 							button='Details'
-							title={'More Info'}
-							buttonStyle={{color: 'primary', size: 'large', variant: 'outlined', mt: '10px'}}
+							//title={'More Info'}
+							buttonStyle={{color: 'primary', size: 'large', variant: 'outlined', mt: '10px', modalWidth: '1000px'}}
 							content={
 								<Details left={left} right={right} />
 							}
