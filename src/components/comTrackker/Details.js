@@ -16,6 +16,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 import dayjs from 'dayjs'
 
+import DialogBox from '../mini-components/DialogBox'
 function Row(props) {
 	const { row } = props
 	const [open, setOpen] = React.useState(false)
@@ -35,6 +36,7 @@ function Row(props) {
 				<TableCell component="th" scope="row">
 					{row.month}
 				</TableCell>
+				<TableCell align="right">{row.totalSaleAmount}</TableCell>
 				<TableCell align="right">{row.saleCount}</TableCell>
 				<TableCell align="right">{row.installedCount}</TableCell>
 				<TableCell align="right">{row.totalMoneyForMonth}</TableCell>
@@ -79,6 +81,7 @@ function Row(props) {
 Row.propTypes = {
 	row: PropTypes.shape({
 		saleCount: PropTypes.number.isRequired,
+		totalSaleAmount: PropTypes.string.isRequired,
 		totalMoneyForMonth: PropTypes.string.isRequired,
 		installedCount: PropTypes.number.isRequired,
 		sales: PropTypes.arrayOf(
@@ -92,7 +95,6 @@ Row.propTypes = {
 	}).isRequired,
 }
 
-
 export default function CollapsibleTable({ left, right }) {
 	//console.log(left, right)
 
@@ -104,80 +106,106 @@ export default function CollapsibleTable({ left, right }) {
 		for (let i = 1; i <= 12; i++) {
 			result.push(
 				items.filter((el) => {
-					return dayjs(type === 2 ? el[el.length -1] : el[1]).format('M') == i
+					return dayjs(type === 2 ? el[el.length - 1] : el[2]).format('M') == i
 				})
 			)
 		}
 		result = result.filter((el) => el.length > 0)
 
 		result.forEach((el) => {
-			el.unshift(dayjs(el[0][1]).format('MMM YY'))
+			el.unshift(dayjs(el[0][2]).format('MMM YY'))
 		})
 		return result
 	}
 
 	const all = createRows(allSold, 1)
 
-
-
-  //console.log(all)
+	//console.log(all)
 
 	const rows = all?.map((el) => {
 		const saleCount = el.length - 1
 		const month = el[0]
-    const installedCount = right.filter(e => dayjs(e[2]).format('MMM YY') === month).length
+		const installedCount = right.filter(
+			(e) => dayjs(e[3]).format('MMM YY') === month
+		).length
 		const totalMoneyForMonth = saleCount * 50 + installedCount * 50
-    
+
 		el.shift()
 
 		const sales = el.map((job) => {
-      
 			return {
-				postcode: job[0],
-				soldDate: job[1],
-				installedDate: job[2] ? dayjs(job[2]).format('MMM YY') : 'N/A',
+				postcode: job[1],
+				soldDate: dayjs(job[2]).format('DD/MM/YY'),
+				installedDate: job[3] ? dayjs(job[3]).format('MMM YY') : 'N/A',
 			}
 		})
+
+		const totalSaleAmount = `£${el
+			.map((e) => Number(e[0]))
+			.reduce((a, b) => a + b)}`
+
+		console.log({
+			month,
+			totalSaleAmount,
+			saleCount,
+			installedCount,
+			totalMoneyForMonth: `£${totalMoneyForMonth}`,
+			sales,
+		})
+		//console.log(allSold.forEach(el => console.log(el)))
+		//console.log(all)
 
 		return {
 			month,
 			saleCount,
 			installedCount,
 			totalMoneyForMonth: `£${totalMoneyForMonth}`,
+			totalSaleAmount,
 			sales,
 		}
 	})
 
-  rows.reverse()
+	rows.reverse()
 
-  const totalPaid = ((left.length + right.length + right.length) - (rows[0].saleCount + rows[0].installedCount)) * 50
-  const totalOwed = (left.length + (rows[0].saleCount + rows[0].installedCount)) * 50
+	console.log(rows)
 
+	//Bonus count
+	const totalPaid =
+		(left.length +
+			right.length +
+			right.length -
+			(rows[0]?.saleCount + rows[0]?.installedCount)) *
+		50 || 0
+	const totalOwed =
+		(left.length + (rows[0]?.saleCount + rows[0]?.installedCount)) * 50 || 0
 
+	const totalBonus = totalPaid + totalOwed || 0
 
+	//Quote Prices
+	const allJobPrices = allSold.map((el) => Number(el[0]))
+	const totalSaleAmount =
+		allJobPrices.length > 0
+			? allJobPrices.reduce((sum, row) => {
+					return sum + row
+			  })
+			: 0
+	const averageSale = Math.round(totalSaleAmount / allJobPrices.length)
+	const highestSale = allJobPrices.sort((a, b) => b - a)[0]
+	const lowestSale = allJobPrices.sort((a, b) => a - b)[0]
 
+	//Job Count
+	const installedCount = right.length
+	const awaitingInstallCount = left.length
+	const totalSold = installedCount + awaitingInstallCount
 
-
-
-
-
+	function numCom(x) {
+		if (x) {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+		}
+	}
 
 	return (
 		<>
-			{/* <TableContainer component={Paper}>
-				<Table aria-label="collapsible table">
-					<TableHead>
-						<TableRow>
-							<TableCell>This Month</TableCell>
-							<TableCell align="right">Calories</TableCell>
-							<TableCell align="right">Fat&nbsp;(g)</TableCell>
-							<TableCell align="right">Carbs&nbsp;(g)</TableCell>
-							<TableCell align="right">Protein&nbsp;(g)</TableCell>
-						</TableRow>
-					</TableHead>
-				</Table>
-			</TableContainer> */}
-      
 			<Box
 				sx={{
 					display: 'flex',
@@ -186,62 +214,31 @@ export default function CollapsibleTable({ left, right }) {
 					mb: '20px',
 				}}
 			>
-        
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						flexDirection: 'column',
-					}}
-				>
-					<Typography variant="h5">Awaiting install</Typography>
-					<Typography variant="h6">{left.length}</Typography>
-				</Box>
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						flexDirection: 'column',
-					}}
-				>
-					<Typography variant="h5">Installed</Typography>
-					<Typography variant="h6">{right.length}</Typography>
-				</Box>
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						flexDirection: 'column',
-					}}
-				>
-					<Typography variant="h5">Total Sold</Typography>
-					<Typography variant="h6">{left.length + right.length}</Typography>
-				</Box>
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						flexDirection: 'column',
-					}}
-				>
-					<Typography variant="h5">Owed</Typography>
-					<Typography variant="h6">£{totalOwed}</Typography>
-				</Box>
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						flexDirection: 'column',
-					}}
-				>
-					<Typography variant="h5">Paid</Typography>
-					<Typography variant="h6">£{totalPaid}</Typography>
-				</Box>
+				<DialogBox
+					title={'Total Sold'}
+					amount={totalSold}
+					info={[
+						['Total installed', installedCount],
+						['Awaiting install', awaitingInstallCount],
+					]}
+				/>
+				<DialogBox
+					title={'Total Sale'}
+					amount={`£${numCom(totalSaleAmount)}`}
+					info={[
+						['Average Sale', `£${numCom(averageSale)}`],
+						['Highest Sale', `£${numCom(highestSale)}`],
+						['Lowest Sale', `£${numCom(lowestSale)}`],
+					]}
+				/>
+				<DialogBox
+					title={'Total Bonus'}
+					amount={`£${numCom(totalBonus)}`}
+					info={[
+						['Owed', `£${numCom(totalOwed)}`],
+						['Paid', `£${numCom(totalPaid)}`],
+					]}
+				/>
 			</Box>
 			<TableContainer component={Paper}>
 				<Table aria-label="collapsible table">
@@ -249,6 +246,7 @@ export default function CollapsibleTable({ left, right }) {
 						<TableRow>
 							<TableCell />
 							<TableCell>Month</TableCell>
+							<TableCell align="right">Sales Total</TableCell>
 							<TableCell align="right">Sold</TableCell>
 							<TableCell align="right">Installed </TableCell>
 							<TableCell align="right">Paid</TableCell>

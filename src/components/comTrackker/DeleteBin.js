@@ -69,7 +69,7 @@ export default function DeleteBin({ deleted, setDeleted, left, setLeft, not }) {
 				}}
 			>
 				{deleted.map((value) => {
-					const labelId = `checkbox-list-label-${value[0]}`
+					const labelId = `checkbox-list-label-${value[1]}`
 
 					return (
 						<ListItem key={Math.random() * 100} disablePadding>
@@ -87,10 +87,10 @@ export default function DeleteBin({ deleted, setDeleted, left, setLeft, not }) {
 										inputProps={{ 'aria-labelledby': labelId }}
 									/>
 								</ListItemIcon>
-								<ListItemText id={labelId} primary={value[0]} />
+								<ListItemText id={labelId} primary={value[1]} />
 								<ListItemText
 									id={labelId}
-									primary={dayjs(value[1]).format('DD/MM/YYYY')}
+									primary={dayjs(value[2]).format('DD/MM/YYYY')}
 								/>
 							</ListItemButton>
 						</ListItem>

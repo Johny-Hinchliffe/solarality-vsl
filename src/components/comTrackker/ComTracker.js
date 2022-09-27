@@ -41,8 +41,11 @@ export default function ComTracker() {
 	const [sortBy, setSortBy] = React.useState('Date')
 	const [date, setDate] = React.useState(new Date())
 	const [postcode, setPostcode] = React.useState()
+	const [cost, setCost] = React.useState()
+
 	const [error, setError] = React.useState(false)
-	const [jobMonth, setJobMonth] = React.useState([])
+	const [thisMonthCom, setThisMonthCom] = React.useState(undefined)
+
 
 	const leftChecked = intersection(checked, left)
 	const rightChecked = intersection(checked, right)
@@ -68,6 +71,10 @@ export default function ComTracker() {
 		getLeft()
 		getRight()
 		setChecked([])
+
+		console.log('right', right)
+		console.log('left', left)
+
 	}, [])
 
 	React.useEffect(() => {
@@ -150,13 +157,13 @@ export default function ComTracker() {
 	}
 
 	const handleSubmit = (event) => {
-		if (!postcode) {
+		if (!postcode || !cost || isNaN(cost)) {
 			setError(true)
 		} else {
 			setError(false)
 			setLeft([
 				...left,
-				[postcode.toUpperCase(), dayjs(date).format('YYYY/MM/DD')],
+				[cost, postcode.toUpperCase(), dayjs(date).format('YYYY/MM/DD')],
 			])
 		}
 	}
@@ -222,7 +229,7 @@ export default function ComTracker() {
 				})
 			)
 		}
-		result = result.filter((el) => el.length > 0)
+		result = result.filter((el) => el.length > 0).reverse()
 
 
 		return (
@@ -257,10 +264,10 @@ export default function ComTracker() {
 												}}
 											/>
 										</ListItemIcon>
-										<ListItemText id={labelId} primary={value[0]} />
+										<ListItemText id={labelId} primary={value[1]} />
 										<ListItemText
 											id={labelId}
-											primary={dayjs(value[1]).format('DD/MM/YYYY')}
+											primary={dayjs(value[2]).format('DD/MM/YYYY')}
 										/>
 									</ListItem>
 								)
@@ -360,6 +367,18 @@ export default function ComTracker() {
 										}}
 										error={error}
 									/>
+									<TextField
+										id="standard-basic"
+										label="System Cost"
+										name="cost"
+										variant="outlined"
+										sx={{ marginBottom: '10px' }}
+										onChange={(newValue) => {
+											setCost(newValue.target.value)
+											if (newValue.target.value) setError(false)
+										}}
+										error={error}
+									/>
 									<LocalizationProvider dateAdapter={AdapterDayjs}>
 										<DesktopDatePicker
 											value={date}
@@ -429,7 +448,7 @@ export default function ComTracker() {
 							//title={'More Info'}
 							buttonStyle={{color: 'primary', size: 'large', variant: 'outlined', mt: '10px', modalWidth: '1000px'}}
 							content={
-								<Details left={left} right={right} />
+								<Details left={left} right={right} setThisMonthCom={setThisMonthCom} />
 							}
 						/>
 					</Grid>
@@ -441,12 +460,17 @@ export default function ComTracker() {
 			<Box
 				sx={{
 					display: 'flex',
-					justifyContent: 'space-around',
+					justifyContent: 'center',
+					alignItems: 'center',
 					marginTop: '10px',
+					flexDirection: 'column',
 				}}
 			>
 				<Typography variant="h5">
-					Grand Total £{(left.length + right.length) * 100}
+					Bonus in {dayjs().format('MMMM')}'s payslip:
+				</Typography>
+				<Typography variant="h5">
+					{thisMonthCom || '£0'}
 				</Typography>
 			</Box>
 		</>
