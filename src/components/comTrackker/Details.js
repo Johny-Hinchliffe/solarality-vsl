@@ -175,21 +175,15 @@ export default function CollapsibleTable({ left, right, setNextMonthCom }) {
 	const totalOwed =
 		(left.length + (rows[0]?.saleCount + rows[0]?.installedCount)) * 50 || 0
 
-	console.log({
-		totalPaid,
-		totalOwed,
-
-		rows,
-	})
 
 	const funcPrac = () => {
 		const lastMonth = dayjs(
 			`${Number(dayjs().format('MM')) - 1}/01/${dayjs().format('YYYY')}`
 		).format('MMM YY')
 		const thisMonthCom = rows.filter((el) => el.month === lastMonth)[0]
-			.totalMoneyForMonth
+			?.totalMoneyForMonth || 0
 		setNextMonthCom(
-			`Bonus in ${dayjs().format('MMMM')}'s payslip: ${thisMonthCom}`
+			`Bonus in ${dayjs().format('MMMM')}'s payslip: ${thisMonthCom == 0 ? '£0' : thisMonthCom}`
 		)
 	}
 

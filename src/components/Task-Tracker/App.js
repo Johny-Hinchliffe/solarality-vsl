@@ -15,7 +15,7 @@ const App = () => {
 		const getTasks = async () => {
 			const tasksStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
 			setTasks(tasksStorage)
-			console.log(tasksStorage)
+			
 		}
 		getTasks()
 	}, [])

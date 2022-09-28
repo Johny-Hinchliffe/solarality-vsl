@@ -26,7 +26,7 @@ const ArrayResult = ({ arrayResult }) => {
 			/>
 		</div>
 	) : null
-	console.log(roofH)
+
 
 	const panelDetails = `Height: ${arrayResult?.panel?.length || 0}m Width: ${
 		arrayResult?.panel?.width || 0
