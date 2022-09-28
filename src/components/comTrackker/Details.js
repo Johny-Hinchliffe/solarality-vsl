@@ -52,6 +52,8 @@ function Row(props) {
 								<TableHead>
 									<TableRow>
 										<TableCell>Postcode</TableCell>
+										<TableCell>Quote Price</TableCell>
+
 										<TableCell align="right">Sold Date</TableCell>
 										<TableCell align="right">Installed Date</TableCell>
 									</TableRow>
@@ -61,6 +63,9 @@ function Row(props) {
 										<TableRow key={salesRow.soldDate}>
 											<TableCell component="th" scope="row">
 												{salesRow.postcode}
+											</TableCell>
+											<TableCell component="th" scope="row">
+												{salesRow.salePrice}
 											</TableCell>
 											<TableCell align="right">{salesRow.soldDate}</TableCell>
 											<TableCell align="right">
@@ -89,13 +94,14 @@ Row.propTypes = {
 				installedDate: PropTypes.string.isRequired,
 				postcode: PropTypes.string.isRequired,
 				soldDate: PropTypes.string,
+				salePrice: PropTypes.string.isRequired
 			})
 		).isRequired,
 		month: PropTypes.string.isRequired,
 	}).isRequired,
 }
 
-export default function CollapsibleTable({ left, right }) {
+export default function CollapsibleTable({ left, right, setNextMonthCom }) {
 	//console.log(left, right)
 
 	const allSold = left.concat(right)
@@ -133,8 +139,10 @@ export default function CollapsibleTable({ left, right }) {
 		el.shift()
 
 		const sales = el.map((job) => {
+			console.log(job)
 			return {
 				postcode: job[1],
+				salePrice: `£${job[0]}`,
 				soldDate: dayjs(job[2]).format('DD/MM/YY'),
 				installedDate: job[3] ? dayjs(job[3]).format('MMM YY') : 'N/A',
 			}
@@ -143,17 +151,6 @@ export default function CollapsibleTable({ left, right }) {
 		const totalSaleAmount = `£${el
 			.map((e) => Number(e[0]))
 			.reduce((a, b) => a + b)}`
-
-		console.log({
-			month,
-			totalSaleAmount,
-			saleCount,
-			installedCount,
-			totalMoneyForMonth: `£${totalMoneyForMonth}`,
-			sales,
-		})
-		//console.log(allSold.forEach(el => console.log(el)))
-		//console.log(all)
 
 		return {
 			month,
@@ -167,17 +164,36 @@ export default function CollapsibleTable({ left, right }) {
 
 	rows.reverse()
 
-	console.log(rows)
-
 	//Bonus count
 	const totalPaid =
 		(left.length +
 			right.length +
 			right.length -
 			(rows[0]?.saleCount + rows[0]?.installedCount)) *
-		50 || 0
+		50
+
 	const totalOwed =
 		(left.length + (rows[0]?.saleCount + rows[0]?.installedCount)) * 50 || 0
+
+	console.log({
+		totalPaid,
+		totalOwed,
+
+		rows,
+	})
+
+	const funcPrac = () => {
+		const lastMonth = dayjs(
+			`${Number(dayjs().format('MM')) - 1}/01/${dayjs().format('YYYY')}`
+		).format('MMM YY')
+		const thisMonthCom = rows.filter((el) => el.month === lastMonth)[0]
+			.totalMoneyForMonth
+		setNextMonthCom(
+			`Bonus in ${dayjs().format('MMMM')}'s payslip: ${thisMonthCom}`
+		)
+	}
+
+	funcPrac()
 
 	const totalBonus = totalPaid + totalOwed || 0
 
@@ -224,19 +240,19 @@ export default function CollapsibleTable({ left, right }) {
 				/>
 				<DialogBox
 					title={'Total Sale'}
-					amount={`£${numCom(totalSaleAmount)}`}
+					amount={`£${numCom(totalSaleAmount) || 0}`}
 					info={[
-						['Average Sale', `£${numCom(averageSale)}`],
-						['Highest Sale', `£${numCom(highestSale)}`],
-						['Lowest Sale', `£${numCom(lowestSale)}`],
+						['Average Sale', `£${numCom(averageSale) || 0}`],
+						['Highest Sale', `£${numCom(highestSale) || 0}`],
+						['Lowest Sale', `£${numCom(lowestSale) || 0}`],
 					]}
 				/>
 				<DialogBox
 					title={'Total Bonus'}
-					amount={`£${numCom(totalBonus)}`}
+					amount={`£${numCom(totalBonus) || 0}`}
 					info={[
-						['Owed', `£${numCom(totalOwed)}`],
-						['Paid', `£${numCom(totalPaid)}`],
+						['Owed', `£${numCom(totalOwed) || 0}`],
+						['Paid', `£${numCom(totalPaid) || 0}`],
 					]}
 				/>
 			</Box>

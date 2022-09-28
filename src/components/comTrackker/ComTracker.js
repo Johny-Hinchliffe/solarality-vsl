@@ -44,7 +44,9 @@ export default function ComTracker() {
 	const [cost, setCost] = React.useState()
 
 	const [error, setError] = React.useState(false)
-	const [thisMonthCom, setThisMonthCom] = React.useState(undefined)
+	
+
+	const [nextMonthCom, setNextMonthCom] = React.useState('Click Details to calculate your bonus')
 
 
 	const leftChecked = intersection(checked, left)
@@ -72,8 +74,7 @@ export default function ComTracker() {
 		getRight()
 		setChecked([])
 
-		console.log('right', right)
-		console.log('left', left)
+		
 
 	}, [])
 
@@ -448,7 +449,7 @@ export default function ComTracker() {
 							//title={'More Info'}
 							buttonStyle={{color: 'primary', size: 'large', variant: 'outlined', mt: '10px', modalWidth: '1000px'}}
 							content={
-								<Details left={left} right={right} setThisMonthCom={setThisMonthCom} />
+								<Details left={left} right={right} setNextMonthCom={setNextMonthCom} />
 							}
 						/>
 					</Grid>
@@ -467,11 +468,9 @@ export default function ComTracker() {
 				}}
 			>
 				<Typography variant="h5">
-					Bonus in {dayjs().format('MMMM')}'s payslip:
+					{nextMonthCom}
 				</Typography>
-				<Typography variant="h5">
-					{thisMonthCom || '£0'}
-				</Typography>
+				
 			</Box>
 		</>
 	)
