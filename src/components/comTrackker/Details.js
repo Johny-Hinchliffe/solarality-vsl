@@ -170,10 +170,10 @@ export default function CollapsibleTable({ left, right, setNextMonthCom }) {
 
 	//Bonus count
 	const lastMonth = dayjs(
-		`${Number(dayjs().format('MM'))}/01/${dayjs().format('YYYY')}`
+		`${Number(dayjs().format('MM'))-1}/01/${dayjs().format('YYYY')}`
 	).format('MMM YY')
 	const thisMonth = dayjs(
-		`${Number(dayjs().format('MM')) - 1}/01/${dayjs().format('YYYY')}`
+		`${Number(dayjs().format('MM'))}/01/${dayjs().format('YYYY')}`
 	).format('MMM YY')
 
 
@@ -270,7 +270,7 @@ export default function CollapsibleTable({ left, right, setNextMonthCom }) {
 							<TableCell align="right">Sold</TableCell>
 							<TableCell align="right">Installed </TableCell>
 							<TableCell align="right">Paid</TableCell>
-							<TableCell align="right">Bonus</TableCell>
+							<TableCell align="right">Earnt</TableCell>
 
 						</TableRow>
 					</TableHead>

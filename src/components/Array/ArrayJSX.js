@@ -52,7 +52,7 @@ const ArrayJSX = ({
 			</div>
 			<div className="fields">
 				<Input
-					title="Roof Width"
+					title="Roof Length"
 					tip="Meausre the width of the house, not the rafter length"
 					position="bottom center"
 					ref={width}
@@ -61,8 +61,8 @@ const ArrayJSX = ({
 					className="twelve wide field"
 				/>
 				<Input
-					title="Rafter Length"
-					tip="Use the Roof Pitch Calculator or calculate the rafter length by adding the roof pitch at the bottom"
+					title="Roof Width"
+					tip="Measure the width of the building with the ridge in the middle"
 					position="bottom center"
 					ref={length}
 					icon="arrows alternate vertical"
